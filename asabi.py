@@ -43,14 +43,21 @@ class FileTableApp(QWidget):
         self.model.setTable("files")
         self.model.select()
         
+        # Hide the ID column
+        self.model.setEditStrategy(QSqlTableModel.OnManualSubmit)
+        self.table_view.setModel(self.model)
+        self.table_view.hideColumn(0)  # Hide the ID column
+        
+        # Filtering and sorting model
         self.filter_model = QSortFilterProxyModel(self)
         self.filter_model.setSourceModel(self.model)
-        self.filter_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.filter_model.setFilterKeyColumn(1)  # Filtering by filename column
+        self.filter_model.setSortCaseSensitivity(Qt.CaseInsensitive)
         
         self.table_view.setModel(self.filter_model)
         self.table_view.setSortingEnabled(True)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.filter_model.sort(1, Qt.AscendingOrder)  # Sort by filename column
 
     def filter_table(self):
         """Applies filter based on the text in the line edit."""
